@@ -26,7 +26,7 @@ require (
 	github.com/coreos/stream-metadata-go v0.4.4
 	github.com/crc-org/crc/v2 v2.38.0
 	github.com/crc-org/vfkit v0.5.1
-	github.com/cyphar/filepath-securejoin v0.3.3
+	github.com/cyphar/filepath-securejoin v0.3.4
 	github.com/digitalocean/go-qemu v0.0.0-20230711162256-2e3d0186973e
 	github.com/docker/distribution v2.8.3+incompatible
 	github.com/docker/docker v27.3.1+incompatible
@@ -46,7 +46,7 @@ require (
 	github.com/klauspost/pgzip v1.2.6
 	github.com/linuxkit/virtsock v0.0.0-20220523201153-1a23e78aa7a2
 	github.com/mattn/go-shellwords v1.0.12
-	github.com/mattn/go-sqlite3 v1.14.23
+	github.com/mattn/go-sqlite3 v1.14.24
 	github.com/mdlayher/vsock v1.2.1
 	github.com/moby/sys/capability v0.3.0
 	github.com/moby/sys/user v0.3.0
@@ -62,7 +62,7 @@ require (
 	github.com/opencontainers/selinux v1.11.0
 	github.com/openshift/imagebuilder v1.2.15
 	github.com/rootless-containers/rootlesskit/v2 v2.3.1
-	github.com/shirou/gopsutil/v4 v4.24.8
+	github.com/shirou/gopsutil/v4 v4.24.9
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/pflag v1.0.5
@@ -70,14 +70,14 @@ require (
 	github.com/vbauerster/mpb/v8 v8.8.3
 	github.com/vishvananda/netlink v1.3.0
 	go.etcd.io/bbolt v1.3.11
-	golang.org/x/crypto v0.27.0
+	golang.org/x/crypto v0.28.0
 	golang.org/x/exp v0.0.0-20240909161429-701f63a606c0
-	golang.org/x/net v0.29.0
+	golang.org/x/net v0.30.0
 	golang.org/x/sync v0.8.0
 	golang.org/x/sys v0.26.0
 	golang.org/x/term v0.25.0
-	golang.org/x/text v0.18.0
-	google.golang.org/protobuf v1.34.2
+	golang.org/x/text v0.19.0
+	google.golang.org/protobuf v1.35.0
 	gopkg.in/inf.v0 v0.9.1
 	gopkg.in/yaml.v3 v3.0.1
 	sigs.k8s.io/yaml v1.4.0
@@ -113,6 +113,7 @@ require (
 	github.com/disiqueira/gotree/v3 v3.0.2 // indirect
 	github.com/distribution/reference v0.6.0 // indirect
 	github.com/docker/docker-credential-helpers v0.8.2 // indirect
+	github.com/ebitengine/purego v0.8.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/fsouza/go-dockerclient v1.12.0 // indirect
@@ -189,7 +190,6 @@ require (
 	github.com/seccomp/libseccomp-golang v0.10.0 // indirect
 	github.com/secure-systems-lab/go-securesystemslib v0.8.0 // indirect
 	github.com/segmentio/ksuid v1.0.4 // indirect
-	github.com/shoenig/go-m1cpu v0.1.6 // indirect
 	github.com/sigstore/fulcio v1.6.4 // indirect
 	github.com/sigstore/rekor v1.3.6 // indirect
 	github.com/sigstore/sigstore v1.8.9 // indirect

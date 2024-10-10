@@ -236,6 +236,14 @@ QUADLET_UNIT_DIRS=<Directory> /usr/lib/systemd/system-generators/podman-system-g
 This will instruct Quadlet to look for units in this directory instead of the common ones and by
 that limit the output to only the units you are debugging.
 
+### Implicit network dependencies
+
+In the case of Container, Image and Build units, Quadlet will add dependencies on the `network-online.target`
+by adding `After=` and `Wants=` properties to the unit. This is to ensure that the network is reachable if
+an image needs to be pulled.
+
+This behavior can be disabled by adding `DefaultDependencies=false` in the `Quadlet` section.
+
 ## Container units [Container]
 
 Container units are named with a `.container` extension and contain a `[Container]` section describing
@@ -256,7 +264,7 @@ Valid options for `[Container]` are listed below:
 |--------------------------------------|------------------------------------------------------|
 | AddCapability=CAP                    | --cap-add CAP                                        |
 | AddDevice=/dev/foo                   | --device /dev/foo                                    |
-| AddHost=hostname:192.168.10.11       | --add-host=hostname:192.168.10.11                    |
+| AddHost=example\.com:192.168.10.11   | --add-host example.com:192.168.10.11                 |
 | Annotation="XYZ"                     | --annotation "XYZ"                                   |
 | AutoUpdate=registry                  | --label "io.containers.autoupdate=registry"          |
 | CgroupsMode=no-conmon                | --cgroups=no-conmon                                  |
@@ -264,7 +272,7 @@ Valid options for `[Container]` are listed below:
 | ContainersConfModule=/etc/nvd\.conf  | --module=/etc/nvd\.conf                              |
 | DNS=192.168.55.1                     | --dns=192.168.55.1                                   |
 | DNSOption=ndots:1                    | --dns-option=ndots:1                                 |
-| DNSSearch=foo.com                    | --dns-search=foo.com                                 |
+| DNSSearch=example.com                | --dns-search example.com                             |
 | DropCapability=CAP                   | --cap-drop=CAP                                       |
 | Entrypoint=/foo.sh                   | --entrypoint=/foo.sh                                 |
 | Environment=foo=bar                  | --env foo=bar                                        |
@@ -290,7 +298,7 @@ Valid options for `[Container]` are listed below:
 | HealthStartupSuccess=2               | --health-startup-success=2                           |
 | HealthStartupTimeout=1m33s           | --health-startup-timeout=1m33s                       |
 | HealthTimeout=20s                    | --health-timeout=20s                                 |
-| HostName=new-host-name               | --hostname="new-host-name"                           |
+| HostName=example.com                 | --hostname example.com                               |
 | Image=ubi8                           | Image specification - ubi8                           |
 | IP=192.5.0.1                         | --ip 192.5.0.1                                       |
 | IP6=2001:db8::1                      | --ip6 2001:db8::1                                    |
@@ -299,15 +307,15 @@ Valid options for `[Container]` are listed below:
 | LogOpt=path=/var/log/mykube\.json    | --log-opt path=/var/log/mykube\.json                 |
 | Mask=/proc/sys/foo\:/proc/sys/bar    | --security-opt mask=/proc/sys/foo:/proc/sys/bar      |
 | Mount=type=...                       | --mount type=...                                     |
-| Network=host                         | --net host                                           |
+| Network=host                         | --network host                                       |
 | NetworkAlias=name                    | --network-alias name                                 |
 | NoNewPrivileges=true                 | --security-opt no-new-privileges                     |
 | Notify=true                          | --sdnotify container                                 |
 | PidsLimit=10000                      | --pids-limit 10000                                   |
 | Pod=pod-name                         | --pod=pod-name                                       |
-| PodmanArgs=--add-host foobar         | --add-host foobar                                    |
-| PublishPort=50-59                    | --publish 50-59                                      |
-| Pull=never                           | --pull=never                                         |
+| PodmanArgs=--publish 8080:80         | --publish 8080:80                                    |
+| PublishPort=8080:80                  | --publish 8080:80                                    |
+| Pull=never                           | --pull never                                         |
 | ReadOnly=true                        | --read-only                                          |
 | ReadOnlyTmpfs=true                   | --read-only-tmpfs                                    |
 | Rootfs=/var/lib/rootfs               | --rootfs /var/lib/rootfs                             |
@@ -914,11 +922,11 @@ Valid options for `[Pod]` are listed below:
 
 | **[Pod] options**                   | **podman container create equivalent** |
 |-------------------------------------|----------------------------------------|
-| AddHost=hostname:192.168.10.11      | --add-host=hostname:192.168.10.11      |
+| AddHost=example\.com:192.168.10.11  | --add-host example.com:192.168.10.11   |
 | ContainersConfModule=/etc/nvd\.conf | --module=/etc/nvd\.conf                |
 | DNS=192.168.55.1                    | --dns=192.168.55.1                     |
 | DNSOption=ndots:1                   | --dns-option=ndots:1                   |
-| DNSSearch=foo.com                   | --dns-search=foo.com                   |
+| DNSSearch=example.com               | --dns-search example.com               |
 | GIDMap=0:10000:10                   | --gidmap=0:10000:10                    |
 | GlobalArgs=--log-level=debug        | --log-level=debug                      |
 | IP=192.5.0.1                        | --ip 192.5.0.1                         |
@@ -927,7 +935,7 @@ Valid options for `[Pod]` are listed below:
 | NetworkAlias=name                   | --network-alias name                   |
 | PodmanArgs=\-\-cpus=2               | --cpus=2                               |
 | PodName=name                        | --name=name                            |
-| PublishPort=50-59                   | --publish 50-59                        |
+| PublishPort=8080:80                 | --publish 8080:80                      |
 | ServiceName=name                    | Name the systemd unit `name.service`   |
 | SubGIDMap=gtest                     | --subgidname=gtest                     |
 | SubUIDMap=utest                     | --subuidname=utest                     |
@@ -1125,9 +1133,9 @@ Valid options for `[Kube]` are listed below:
 | GlobalArgs=--log-level=debug        | --log-level=debug                                                |
 | KubeDownForce=true                  | --force (for `podman kube down`)                                 |
 | LogDriver=journald                  | --log-driver journald                                            |
-| Network=host                        | --net host                                                       |
+| Network=host                        | --network host                                                   |
 | PodmanArgs=\-\-annotation=key=value | --annotation=key=value                                           |
-| PublishPort=59-60                   | --publish=59-60                                                  |
+| PublishPort=8080:80                 | --publish 8080:80                                                |
 | SetWorkingDirectory=yaml            | Set `WorkingDirectory` of unit file to location of the YAML file |
 | UserNS=keep-id:uid=200,gid=210      | --userns keep-id:uid=200,gid=210                                 |
 | Yaml=/tmp/kube.yaml                 | podman kube play /tmp/kube.yaml                                  |
@@ -1552,7 +1560,7 @@ Valid options for `[Build]` are listed below:
 | ContainersConfModule=/etc/nvd\.conf | --module=/etc/nvd\.conf                     |
 | DNS=192.168.55.1                    | --dns=192.168.55.1                          |
 | DNSOption=ndots:1                   | --dns-option=ndots:1                        |
-| DNSSearch=foo.com                   | --dns-search=foo.com                        |
+| DNSSearch=example.com               | --dns-search example.com                    |
 | Environment=foo=bar                 | --env foo=bar                               |
 | File=/path/to/Containerfile         | --file=/path/to/Containerfile               |
 | ForceRM=false                       | --force-rm=false                            |
@@ -1561,8 +1569,8 @@ Valid options for `[Build]` are listed below:
 | ImageTag=localhost/imagename        | --tag=localhost/imagename                   |
 | Label=label                         | --label=label                               |
 | Network=host                        | --network=host                              |
-| PodmanArgs=--add-host foobar        | --add-host foobar                           |
-| Pull=never                          | --pull=never                                |
+| PodmanArgs=--pull never             | --pull never                                |
+| Pull=never                          | --pull never                                |
 | Secret=secret                       | --secret=id=mysecret,src=path               |
 | SetWorkingDirectory=unit            | Set `WorkingDirectory` of systemd unit file |
 | Target=my-app                       | --target=my-app                             |
@@ -1913,6 +1921,22 @@ This is equivalent to the Podman `--tls-verify` option.
 Override the default architecture variant of the container image.
 
 This is equivalent to the Podman `--variant` option.
+
+## Quadlet section [Quadlet]
+Some quadlet specific configuration is shared between different unit types. Those settings
+can be configured in the `[Quadlet]` section.
+
+Valid options for `[Quadlet]` are listed below:
+
+| **[Quadlet] options**      | **Description**                                   |
+|----------------------------|---------------------------------------------------|
+| DefaultDependencies=false  | Disable implicit network dependencies to the unit |
+
+### `DefaultDependencies=`
+
+Add Quadlet's default network dependencies to the unit (default is `true`).
+
+When set to false, Quadlet will **not** add a dependency (After=, Wants=) to `network-online.target` to the generated unit.
 
 ## EXAMPLES
 
